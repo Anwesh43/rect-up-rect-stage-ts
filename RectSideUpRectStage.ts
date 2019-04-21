@@ -38,13 +38,13 @@ class DrawingUtil {
 
     static drawUpRect(context : CanvasRenderingContext2D, size : number, scale : number) {
         context.fillStyle = foreColor
-        context.fillRect(0, -size * scale, size, size * scale)
+        context.fillRect(0, -size * scale, 2 * size, size * scale)
     }
 
     static drawRSURNode(context : CanvasRenderingContext2D, i : number, scale : number) {
         const gap : number = w / (nodes + 1)
         const size : number = gap / sizeFactor
-        const rSize : number = size / rectSizeFactor
+        const rSize : number = size * rectSizeFactor
         const sc1 : number = ScaleUtil.divideScale(scale, 0, 2)
         const sc2 : number = ScaleUtil.divideScale(scale, 1, 2)
         context.lineCap = 'round'
@@ -57,7 +57,7 @@ class DrawingUtil {
         for (var j = 0; j < rects; j++) {
             context.save()
             context.rotate(j * Math.PI / 2)
-            context.translate(-size, -size)
+            context.translate(-rSize, -rSize)
             DrawingUtil.drawUpRect(context, size - rSize, ScaleUtil.divideScale(sc1, j, rects))
             context.restore()
         }
@@ -106,7 +106,9 @@ class State {
     dir : number = 0
 
     update(cb : Function) {
-        this.scale += ScaleUtil.updateValue(this.scale, this.dir, rects, rects)
+        this.scale += ScaleUtil.updateValue(this.scale, this.dir, rects, 1)
+        console.log(`${this.scale}, ${this.dir}`)
+
         if (Math.abs(this.scale - this.prevScale) > 1) {
             this.scale = this.prevScale + this.dir
             this.dir = 0
@@ -117,7 +119,8 @@ class State {
 
     startUpdating(cb : Function) {
         if (this.dir == 0) {
-            this.dir - 1 - 2 * this.prevScale
+            this.dir = 1 - 2 * this.prevScale
+            console.log(`the dir is ${this.dir}`)
             cb()
         }
     }
