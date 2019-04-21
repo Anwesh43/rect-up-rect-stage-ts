@@ -207,3 +207,25 @@ class RectSideUpRect {
         this.curr.startUpdating(cb)
     }
 }
+
+class Renderer {
+
+    rsur : RectSideUpRect = new RectSideUpRect()
+    animator : Animator = new Animator()
+
+    render(context : CanvasRenderingContext2D) {
+        this.rsur.draw(context)
+    }
+
+    handleTap(cb : Function) {
+        this.rsur.startUpdating(() => {
+            this.animator.start(() => {
+                cb()
+                this.rsur.update(() => {
+                    this.animator.stop()
+                    cb()
+                })
+            })
+        })
+    }
+}
